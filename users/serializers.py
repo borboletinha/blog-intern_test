@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import User
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -7,7 +7,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
                                                style={'input_type': 'password'})
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'password',
                   'confirmed_password']
         extra_kwargs = {
@@ -15,7 +15,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         }
 
     def save(self):
-        user = CustomUser(
+        user = User(
             first_name=self.validated_data['first_name'],
             last_name=self.validated_data['last_name'],
             username=self.validated_data['username'],
@@ -26,6 +26,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         if confirmed_password != password:
             raise serializers.ValidationError({'password': 'Please enter matched passwords'})
-        user.set_password(user.password)
+        user.set_password(password)
         user.save()
         return user

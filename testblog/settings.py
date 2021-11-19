@@ -47,10 +47,10 @@ INSTALLED_APPS = [
 
 # Custom User Model
 
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'users.User'
 
 
-# Authentification with JWT
+# Authentication with JWT
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -127,7 +127,7 @@ WSGI_APPLICATION = 'testblog.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'tblog_db',
+        'NAME': 'testblog_db',
         'USER': 'borboletinha',
         'PASSWORD': PASSWORD,
         'HOST': 'localhost',
