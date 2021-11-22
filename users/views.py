@@ -14,7 +14,7 @@ def registration_view(request):
         data['last_name'] = user.last_name
         data['username'] = user.username
         data['email'] = user.email
-        data['response'] = 'Successfully registered'
+        data['success'] = True
     else:
         data = serializer.errors
     return Response(data, status=status.HTTP_201_CREATED)
