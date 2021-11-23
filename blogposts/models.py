@@ -22,11 +22,10 @@ class BlogPost(models.Model):
         verbose_name = 'Blog post'
         verbose_name_plural = 'Blog posts'
 
-    def pre_save_blogpost_receiver(sender, instance, **kwargs):
-        if not instance.slug:
-            instance.slug = slugify(instance.author.username + '-' + instance.title)
-        else:
-            raise ValueError({'success': False})
+
+def pre_save_blogpost_receiver(sender, instance, **kwargs):
+    if not instance.slug:
+        instance.slug = slugify(instance.author.username + '-' + instance.title)
 
 
-    pre_save.connect(pre_save_blogpost_receiver, sender=BlogPost)
+pre_save.connect(pre_save_blogpost_receiver, sender=BlogPost)
