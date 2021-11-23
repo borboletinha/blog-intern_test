@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.db import IntegrityError
 from .models import BlogPost
 from .serializers import BlogPostSerializer
 
@@ -13,7 +14,11 @@ def blogpost_creation_view(request):
     blogpost = BlogPost(author=author)
     serializer = BlogPostSerializer(blogpost, data=request.data)
     if serializer.is_valid():
-        post = serializer.save()
+        try:
+            post = serializer.save()
+        except IntegrityError:
+            return Response({'success': False, 'response': 'You have already used the title'},
+                            status=status.HTTP_400_BAD_REQUEST)
         data = {'success': True, 'slug': post.slug, 'title': post.title, 'text': post.text,
                 'first_name': post.author.first_name, 'last_name': post.author.last_name,
                 'username': post.author.username}
