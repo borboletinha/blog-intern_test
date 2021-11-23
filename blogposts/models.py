@@ -20,4 +20,3 @@ class BlogPost(models.Model):
     class Meta:
         verbose_name = 'Blog post'
         verbose_name_plural = 'Blog posts'
-
