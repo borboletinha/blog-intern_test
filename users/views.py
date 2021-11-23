@@ -1,7 +1,9 @@
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.decorators import api_view
-from .serializers import RegistrationSerializer
+from django.db.models import Count
+from .serializers import *
+from .models import User
 
 
 @api_view(['POST'])
@@ -16,3 +18,17 @@ def registration_view(request):
         data = {'success': False, 'response': "The user isn't created'"}
         data.update(serializer.errors)
     return Response(data, status=status.HTTP_201_CREATED)
+
+
+class UsersViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class UsersSortedViewSet(viewsets.ViewSet):
+    def retrieve(self, request):
+        queryset = User.objects.all().annotate(num_posts=Count('blogpost')).order_by('-num_posts')
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
