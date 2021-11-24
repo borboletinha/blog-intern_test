@@ -28,7 +28,7 @@ class UsersViewSet(viewsets.ViewSet):
 
 
 class UsersSortedViewSet(viewsets.ViewSet):
-    def retrieve(self, request):
+    def sorted_list(self, request):
         queryset = User.objects.all().annotate(num_posts=Count('blogpost')).order_by('-num_posts')
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)

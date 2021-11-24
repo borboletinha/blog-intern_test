@@ -5,7 +5,7 @@ from .views import *
 
 app_name = 'users_api'
 users_list = UsersViewSet.as_view({'get': 'list'})
-users_list_sorted = UsersSortedViewSet.as_view({'get': 'retrieve'})
+users_list_sorted = UsersSortedViewSet.as_view({'get': 'sorted_list'})
 urlpatterns = [
     path('register/', registration_view, name='register'),
     path('login/', TokenObtainPairView.as_view(), name='login'),
