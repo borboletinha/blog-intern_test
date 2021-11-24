@@ -9,7 +9,7 @@ class BlogPost(models.Model):
     title = models.CharField(max_length=300)
     text = models.TextField(max_length=7000)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default='Deleted user')
-    date_created = models.TimeField(auto_now_add=True, verbose_name='date created')
+    date_created = models.DateTimeField(auto_now_add=True, verbose_name='date created')
     slug = models.SlugField(max_length=255, unique=True, db_index=True)
 
     def __str__(self):
