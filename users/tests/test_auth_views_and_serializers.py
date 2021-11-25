@@ -1,10 +1,18 @@
+import json
 from django.core.exceptions import ValidationError
-from django.urls import reverse
 from .test_setup import TestSetUp
 from ..models import User
 
 
 class RegistrationViewsTest(TestSetUp):
+
+    # Successful registration test
+    def test_of_user_successfully_register(self):
+        response = self.client.post(self.register_url, self.user_data, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data, {"success": True, "response": "The user is successfully created.",
+                                         'first_name': 'Test_first_name', 'last_name': 'Test_last_name',
+                                         'username': 'Test_username', 'email': 'test@email.blog'})
 
     # Registration without credentials tests
     def test_of_user_cannot_register_without_all_credentials(self):
@@ -73,14 +81,6 @@ class RegistrationViewsTest(TestSetUp):
         self.assertRaisesMessage(ValidationError, {"success": False, "response": "The user isn't created.",
                                                    "confirmed_password": ["This field is required."]})
 
-    # Correct registration test
-    def test_of_user_successfully_register(self):
-        response = self.client.post(self.register_url, self.user_data, format='json')
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data, {"success": True, "response": "The user is successfully created.",
-                                         'first_name': 'Test_first_name', 'last_name': 'Test_last_name',
-                                         'username': 'Test_username', 'email': 'test@email.blog'})
-
     # Registration with preexisting unique credentials
     def test_of_user_with_preexisted_username(self):
         init_response = self.client.post(self.register_url, self.user_data, format='json')
@@ -96,8 +96,25 @@ class RegistrationViewsTest(TestSetUp):
         self.assertEqual(response.data, {"success": False, "response": "The user isn't created.",
                                          "email": ["user with this email already exists."]})
 
+    # Mismatching passwords test
+    def test_of_mismatching_password_and_confirmed_password(self):
+        response = self.client.post(self.register_url, {'first_name': 'Test_first_name', 'last_name': 'Test_last_name',
+                                                        'username': 'Test_username', 'email': 'test@email.blog',
+                                                        'password': 'test_password123',
+                                                        'confirmed_password': 'test_password000'})
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, {"password": "Please enter matched passwords."})
+
+    # GET method test
+    def test_method_get_not_allowed(self):
+        response = self.client.get(self.register_url, self.user_data, format='json')
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.data, {"detail": 'Method \"GET\" not allowed.'})
+
 
 class LogInViewsTest(TestSetUp):
+
+    # Successful log in tests
     def test_successful_log_in(self):
         user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
                                         'test@email.blog', 'test_password123')
@@ -109,3 +126,97 @@ class LogInViewsTest(TestSetUp):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('refresh' in response.data)
         self.assertTrue('access' in response.data)
+
+    # Mismatching credentials tests
+    def test_log_in_with_wrong_email(self):
+        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
+                                        'test@email.blog', 'test_password123')
+        user.save()
+
+        response = self.client.post(self.login_url,
+                                    {'email': 'wrong@email.blog', 'password': 'test_password123'},
+                                    format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, {"detail": "No active account found with the given credentials"})
+
+    def test_log_in_with_wrong_password(self):
+        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
+                                        'test@email.blog', 'test_password123')
+        user.save()
+
+        response = self.client.post(self.login_url,
+                                    {'email': 'test@email.blog', 'password': 'test_password000'},
+                                    format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, {"detail": "No active account found with the given credentials"})
+
+    def test_log_in_with_wrong_email_and_password(self):
+        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
+                                        'test@email.blog', 'test_password123')
+        user.save()
+
+        response = self.client.post(self.login_url,
+                                    {'email': 'wrong@email.blog', 'password': 'test_password000'},
+                                    format='json')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.data, {"detail": "No active account found with the given credentials"})
+
+    # GET method test
+    def test_method_get_not_allowed(self):
+        response = self.client.get(self.register_url, self.user_data, format='json')
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.data, {"detail": 'Method \"GET\" not allowed.'})
+
+
+class TokenRefreshTests(TestSetUp):
+
+    # Token refresh tests
+    def test_successful_token_refresh(self):
+        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
+                                        'test@email.blog', 'test_password123')
+        user.save()
+        response = self.client.post(self.login_url,
+                                    {'email': 'test@email.blog', 'password': 'test_password123'},
+                                    format='json')
+        refresh_token = response.data['refresh']
+        response_refresh = self.client.post(self.login_refresh_url, {'refresh': refresh_token})
+        self.assertEqual(response_refresh.status_code, 200)
+        self.assertTrue('access' in response_refresh.data)
+
+    def test_failed_token_refresh_with_wrong_refresh_token(self):
+        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
+                                        'test@email.blog', 'test_password123')
+        user.save()
+        response = self.client.post(self.login_url,
+                                    {'email': 'test@email.blog', 'password': 'test_password123'},
+                                    format='json')
+        refresh_token = response.data['refresh']
+        self.assertNotEqual(refresh_token, 'wrong_test_token')
+        response_refresh = self.client.post(self.login_refresh_url, {'refresh': 'wrong_test_token'})
+        self.assertEqual(response_refresh.status_code, 401)
+        self.assertTrue(response_refresh.data, {"detail": "Token has wrong type", "code": "token_not_valid"})
+
+    # Token refresh without credentials test
+    def test_failed_token_refresh_without_refresh_token(self):
+        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
+                                        'test@email.blog', 'test_password123')
+        user.save()
+        response = self.client.post(self.login_url,
+                                    {'email': 'test@email.blog', 'password': 'test_password123'},
+                                    format='json')
+        refresh_token = response.data['refresh']
+        self.assertNotEqual(refresh_token, 'wrong_test_token')
+        response_refresh = self.client.post(self.login_refresh_url, {'refresh': ''})
+        self.assertEqual(response_refresh.status_code, 400)
+        self.assertTrue(response_refresh.data, {"refresh": ["This field may not be blank."]})
+    
+    # GET method test
+    def test_method_get_not_allowed(self):
+        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
+                                        'test@email.blog', 'test_password123')
+        user.save()
+        response = self.client.get(self.login_url,
+                                    {'email': 'test@email.blog', 'password': 'test_password123'},
+                                    format='json')
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.data, {"detail": 'Method \"GET\" not allowed.'})

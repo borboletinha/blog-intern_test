@@ -25,7 +25,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         confirmed_password = self.validated_data['confirmed_password']
 
         if confirmed_password != password:
-            raise serializers.ValidationError({'password': 'Please enter matched passwords'})
+            raise serializers.ValidationError({'password': 'Please enter matched passwords.'})
         user.set_password(password)
         user.save()
         return user
@@ -34,4 +34,4 @@ class RegistrationSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'username', 'num_posts']
+        fields = ['id', 'first_name', 'last_name', 'username']
