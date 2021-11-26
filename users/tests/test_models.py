@@ -58,13 +58,13 @@ class UserTest(APITestCase):
                           email='test@email.blog', password='test_password123')
 
     # Not providing credentials tests
-    def test_error_when_firstname_not_provided(self):
+    def test_error_when_first_name_not_provided(self):
         self.assertRaises(ValueError, User.objects.create_user, first_name='',
                           last_name='Test_last_name', username='Test_username',
                           email='test@email.blog', password='test_password123')
         self.assertRaisesMessage(ValueError, 'Please enter your first name')
 
-    def test_error_when_lastname_not_provided(self):
+    def test_error_when_last_name_not_provided(self):
         self.assertRaises(ValueError, User.objects.create_user, first_name='Test_first_name',
                           last_name='', username='Test_username',
                           email='test@email.blog', password='test_password123')

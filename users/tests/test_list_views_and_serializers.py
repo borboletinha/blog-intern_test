@@ -47,7 +47,6 @@ class UsersUnsortedListViewsTest(TestSetUp):
 
 
 class UsersSortedListViewsTest(TestSetUp):
-
     def setup(self):
         user_1 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username1',
                                           'test@email.blog1', 'test_password123')

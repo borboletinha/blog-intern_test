@@ -158,7 +158,9 @@ class LogInViewsTest(TestSetUp):
     # GET method test
     def test_method_get_not_allowed(self):
         LogInViewsTest.setup(self)
-        response = self.client.get(self.register_url, self.user_data1, format='json')
+        response = self.client.get(self.login_url,
+                                   {'email': 'test@email.blog', 'password': 'test_password123'},
+                                   format='json')
         self.assertEqual(response.status_code, 405)
         self.assertEqual(response.data, {"detail": 'Method \"GET\" not allowed.'})
 
@@ -168,36 +170,28 @@ class TokenRefreshTests(TestSetUp):
     def setup(self):
         user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
                                         'test@email.blog', 'test_password123')
-
-    # Token refresh tests
-    def test_token_refresh(self):
-        TokenRefreshTests.setup(self)
         response = self.client.post(self.login_url,
                                     {'email': 'test@email.blog', 'password': 'test_password123'},
                                     format='json')
-        refresh_token = response.data['refresh']
+        return response.data['refresh']
+
+    # Token successful refresh test
+    def test_token_refresh(self):
+        refresh_token = TokenRefreshTests.setup(self)
         response_refresh = self.client.post(self.login_refresh_url, {'refresh': refresh_token})
         self.assertEqual(response_refresh.status_code, 200)
         self.assertTrue('access' in response_refresh.data)
 
+    # Token failed refresh test
     def test_failed_token_refresh_with_wrong_refresh_token(self):
-        TokenRefreshTests.setup(self)
-        response = self.client.post(self.login_url,
-                                    {'email': 'test@email.blog', 'password': 'test_password123'},
-                                    format='json')
-        refresh_token = response.data['refresh']
-        self.assertNotEqual(refresh_token, 'wrong_test_token')
-        response_refresh = self.client.post(self.login_refresh_url, {'refresh': 'wrong_test_token'})
+        refresh_token = TokenRefreshTests.setup(self)
+        response_refresh = self.client.post(self.login_refresh_url, {'refresh': 'wrong_token'})
         self.assertEqual(response_refresh.status_code, 401)
         self.assertTrue(response_refresh.data, {"detail": "Token has wrong type", "code": "token_not_valid"})
 
     # Token refresh without credentials test
     def test_failed_token_refresh_without_refresh_token(self):
-        TokenRefreshTests.setup(self)
-        response = self.client.post(self.login_url,
-                                    {'email': 'test@email.blog', 'password': 'test_password123'},
-                                    format='json')
-        refresh_token = response.data['refresh']
+        refresh_token = TokenRefreshTests.setup(self)
         self.assertNotEqual(refresh_token, 'wrong_test_token')
         response_refresh = self.client.post(self.login_refresh_url, {'refresh': ''})
         self.assertEqual(response_refresh.status_code, 400)
@@ -205,7 +199,8 @@ class TokenRefreshTests(TestSetUp):
 
     # GET method test
     def test_method_get_not_allowed(self):
-        TokenRefreshTests.setup(self)
+        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
+                                        'test@email.blog', 'test_password123')
         response = self.client.get(self.login_url,
                                    {'email': 'test@email.blog', 'password': 'test_password123'},
                                    format='json')
