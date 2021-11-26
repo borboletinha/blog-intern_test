@@ -2,7 +2,6 @@ from django.core.exceptions import ValidationError
 from .test_setup import TestSetUp
 from ..models import User
 
-
 # USER REGISTRATION AND LOG IN TESTS
 
 
@@ -84,14 +83,14 @@ class RegistrationViewTest(TestSetUp):
                                                    "confirmed_password": ["This field is required."]})
 
     # Registration with preexisting unique credentials
-    def test_of_registration_with_preexisted_username(self):
+    def test_of_registration_with_preexisting_username(self):
         init_response = self.client.post(self.register_url, self.user_data1, format='json')
         response = self.client.post(self.register_url, self.user_data2, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {"success": False, "response": "The user isn't created.",
                                          "username": ["user with this username already exists."]})
 
-    def test_of_registration_with_preexisted_email(self):
+    def test_of_registration_with_preexisting_email(self):
         init_response = self.client.post(self.register_url, self.user_data1, format='json')
         response = self.client.post(self.register_url, self.user_data3, format='json')
         self.assertEqual(response.status_code, 400)

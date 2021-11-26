@@ -2,8 +2,8 @@ from collections import OrderedDict
 from .test_setup import TestSetUp
 from ..models import User
 
-
 # DISPLAY OF USERS LISTS TESTS
+
 
 class UsersUnsortedListViewsTest(TestSetUp):
 
