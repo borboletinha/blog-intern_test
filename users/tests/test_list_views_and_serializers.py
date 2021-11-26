@@ -7,8 +7,7 @@ from ..models import User
 
 class UsersUnsortedListViewsTest(TestSetUp):
 
-    # Successful display of an unsorted users list
-    def test_of_users_list_display(self):
+    def setup(self):
         user_1 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username1',
                                           'test@email.blog1', 'test_password123')
 
@@ -17,6 +16,10 @@ class UsersUnsortedListViewsTest(TestSetUp):
 
         user_3 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username3',
                                           'test@email.blog3', 'test_password123')
+
+    # Successful display of an unsorted users list
+    def test_of_users_list_display(self):
+        UsersUnsortedListViewsTest.setup(self)
         database_user_1 = User.objects.values('id', 'first_name',
                                               'last_name', 'username').get(username='Test_username1')
         database_user_2 = User.objects.values('id', 'first_name',
@@ -37,14 +40,7 @@ class UsersUnsortedListViewsTest(TestSetUp):
 
     # GET method test
     def test_method_post_not_allowed(self):
-        user_1 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username1',
-                                          'test@email.blog1', 'test_password123')
-
-        user_2 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username2',
-                                          'test@email.blog2', 'test_password123')
-
-        user_3 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username3',
-                                          'test@email.blog3', 'test_password123')
+        UsersUnsortedListViewsTest.setup(self)
         response = self.client.post(self.users_list_url)
         self.assertEqual(response.status_code, 405)
         self.assertEqual(response.data, {"detail": 'Method \"POST\" not allowed.'})
@@ -52,8 +48,7 @@ class UsersUnsortedListViewsTest(TestSetUp):
 
 class UsersSortedListViewsTest(TestSetUp):
 
-    # Successful display of an users list sorted by number of posts
-    def test_of_sorted_users_list_display(self):
+    def setup(self):
         user_1 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username1',
                                           'test@email.blog1', 'test_password123')
 
@@ -62,6 +57,10 @@ class UsersSortedListViewsTest(TestSetUp):
 
         user_3 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username3',
                                           'test@email.blog3', 'test_password123')
+
+    # Successful display of an users list sorted by number of posts
+    def test_of_sorted_users_list_display(self):
+        UsersSortedListViewsTest.setup(self)
         database_user_1 = User.objects.values('id', 'first_name',
                                               'last_name', 'username').get(username='Test_username1')
         database_user_2 = User.objects.values('id', 'first_name',
@@ -99,14 +98,7 @@ class UsersSortedListViewsTest(TestSetUp):
 
     # GET method test
     def test_method_post_not_allowed(self):
-        user_1 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username1',
-                                          'test@email.blog1', 'test_password123')
-
-        user_2 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username2',
-                                          'test@email.blog2', 'test_password123')
-
-        user_3 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username3',
-                                          'test@email.blog3', 'test_password123')
+        UsersSortedListViewsTest.setup(self)
         response = self.client.post(self.users_sorted_list_url)
         self.assertEqual(response.status_code, 405)
         self.assertEqual(response.data, {"detail": 'Method \"POST\" not allowed.'})

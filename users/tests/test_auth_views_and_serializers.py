@@ -116,10 +116,13 @@ class RegistrationViewTest(TestSetUp):
 
 class LogInViewsTest(TestSetUp):
 
-    # Successful log in tests
-    def test_log_in(self):
+    def setup(self):
         user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
                                         'test@email.blog', 'test_password123')
+
+    # Successful log in tests
+    def test_log_in(self):
+        LogInViewsTest.setup(self)
         response = self.client.post(self.login_url,
                                     {'email': 'test@email.blog', 'password': 'test_password123'},
                                     format='json')
@@ -129,8 +132,7 @@ class LogInViewsTest(TestSetUp):
 
     # Mismatching credentials tests
     def test_log_in_with_wrong_email(self):
-        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
-                                        'test@email.blog', 'test_password123')
+        LogInViewsTest.setup(self)
         response = self.client.post(self.login_url,
                                     {'email': 'wrong@email.blog', 'password': 'test_password123'},
                                     format='json')
@@ -138,8 +140,7 @@ class LogInViewsTest(TestSetUp):
         self.assertEqual(response.data, {"detail": "No active account found with the given credentials"})
 
     def test_log_in_with_wrong_password(self):
-        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
-                                        'test@email.blog', 'test_password123')
+        LogInViewsTest.setup(self)
         response = self.client.post(self.login_url,
                                     {'email': 'test@email.blog', 'password': 'test_password000'},
                                     format='json')
@@ -147,6 +148,7 @@ class LogInViewsTest(TestSetUp):
         self.assertEqual(response.data, {"detail": "No active account found with the given credentials"})
 
     def test_log_in_with_wrong_email_and_password(self):
+        LogInViewsTest.setup(self)
         response = self.client.post(self.login_url,
                                     {'email': 'wrong@email.blog', 'password': 'test_password000'},
                                     format='json')
@@ -155,6 +157,7 @@ class LogInViewsTest(TestSetUp):
 
     # GET method test
     def test_method_get_not_allowed(self):
+        LogInViewsTest.setup(self)
         response = self.client.get(self.register_url, self.user_data1, format='json')
         self.assertEqual(response.status_code, 405)
         self.assertEqual(response.data, {"detail": 'Method \"GET\" not allowed.'})
@@ -162,10 +165,13 @@ class LogInViewsTest(TestSetUp):
 
 class TokenRefreshTests(TestSetUp):
 
-    # Token refresh tests
-    def test_token_refresh(self):
+    def setup(self):
         user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
                                         'test@email.blog', 'test_password123')
+
+    # Token refresh tests
+    def test_token_refresh(self):
+        TokenRefreshTests.setup(self)
         response = self.client.post(self.login_url,
                                     {'email': 'test@email.blog', 'password': 'test_password123'},
                                     format='json')
@@ -175,8 +181,7 @@ class TokenRefreshTests(TestSetUp):
         self.assertTrue('access' in response_refresh.data)
 
     def test_failed_token_refresh_with_wrong_refresh_token(self):
-        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
-                                        'test@email.blog', 'test_password123')
+        TokenRefreshTests.setup(self)
         response = self.client.post(self.login_url,
                                     {'email': 'test@email.blog', 'password': 'test_password123'},
                                     format='json')
@@ -188,8 +193,7 @@ class TokenRefreshTests(TestSetUp):
 
     # Token refresh without credentials test
     def test_failed_token_refresh_without_refresh_token(self):
-        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
-                                        'test@email.blog', 'test_password123')
+        TokenRefreshTests.setup(self)
         response = self.client.post(self.login_url,
                                     {'email': 'test@email.blog', 'password': 'test_password123'},
                                     format='json')
@@ -201,8 +205,7 @@ class TokenRefreshTests(TestSetUp):
 
     # GET method test
     def test_method_get_not_allowed(self):
-        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
-                                        'test@email.blog', 'test_password123')
+        TokenRefreshTests.setup(self)
         response = self.client.get(self.login_url,
                                    {'email': 'test@email.blog', 'password': 'test_password123'},
                                    format='json')
