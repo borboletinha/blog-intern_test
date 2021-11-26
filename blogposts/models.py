@@ -1,5 +1,5 @@
 from django.db import models
-from django.conf import settings
+from users.models import User
 from django.urls import reverse
 from django.db.models.signals import pre_save
 from django.template.defaultfilters import slugify
@@ -8,15 +8,15 @@ from django.template.defaultfilters import slugify
 class BlogPost(models.Model):
     title = models.CharField(max_length=300)
     text = models.TextField(max_length=7000)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_DEFAULT, default='Deleted user')
+    author = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default='Deleted user')
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='date created')
     slug = models.SlugField(max_length=255, unique=True, db_index=True)
 
     def __str__(self):
-        return self.title
+        return self.title + '|' + self.author.username
 
     def get_absolute_url(self):
-        return reverse('blogpost_detail', kwargs={'slug': self.slug})
+        return reverse('blogposts_api:blogpost_detail', kwargs={'slug': self.slug})
 
     class Meta:
         verbose_name = 'Blog post'
