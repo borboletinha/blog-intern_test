@@ -9,7 +9,7 @@ from ..models import User
 class RegistrationViewTest(TestSetUp):
 
     # Successful registration test
-    def test_successful_registration(self):
+    def test_registration(self):
         response = self.client.post(self.register_url, self.user_data1, format='json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data, {"success": True, "response": "The user is successfully created.",
@@ -117,7 +117,7 @@ class RegistrationViewTest(TestSetUp):
 class LogInViewsTest(TestSetUp):
 
     # Successful log in tests
-    def test_successful_log_in(self):
+    def test_log_in(self):
         user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
                                         'test@email.blog', 'test_password123')
         response = self.client.post(self.login_url,
@@ -163,7 +163,7 @@ class LogInViewsTest(TestSetUp):
 class TokenRefreshTests(TestSetUp):
 
     # Token refresh tests
-    def test_successful_token_refresh(self):
+    def test_token_refresh(self):
         user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
                                         'test@email.blog', 'test_password123')
         response = self.client.post(self.login_url,

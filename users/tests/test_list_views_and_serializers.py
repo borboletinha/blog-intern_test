@@ -8,7 +8,7 @@ from ..models import User
 class UsersUnsortedListViewsTest(TestSetUp):
 
     # Successful display of an unsorted users list
-    def test_of_users_list_successful_display(self):
+    def test_of_users_list_display(self):
         user_1 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username1',
                                           'test@email.blog1', 'test_password123')
 
@@ -53,7 +53,7 @@ class UsersUnsortedListViewsTest(TestSetUp):
 class UsersSortedListViewsTest(TestSetUp):
 
     # Successful display of an users list sorted by number of posts
-    def test_of_sorted_users_list_successful_display(self):
+    def test_of_sorted_users_list_display(self):
         user_1 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username1',
                                           'test@email.blog1', 'test_password123')
 
