@@ -52,7 +52,7 @@ class UsersUnsortedListViewsTest(TestSetUp):
 
 class UsersSortedListViewsTest(TestSetUp):
 
-    # Successful display of an users list sorted by number pf posts
+    # Successful display of an users list sorted by number of posts
     def test_of_sorted_users_list_successful_display(self):
         user_1 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username1',
                                           'test@email.blog1', 'test_password123')
@@ -91,14 +91,22 @@ class UsersSortedListViewsTest(TestSetUp):
         self.assertEqual(response.data[1], OrderedDict(database_user_2))
         self.assertEqual(response.data[2], OrderedDict(database_user_1))
 
-    # # No users list display
-    # def test_list_display_with_no_user(self):
-    #     response = self.client.get(self.users_list_url)
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.data, [])
-    #
-    # # GET method test
-    # def test_method_post_not_allowed(self):
-    #     response = self.client.post(self.users_list_url)
-    #     self.assertEqual(response.status_code, 405)
-    #     self.assertEqual(response.data, {"detail": 'Method \"POST\" not allowed.'})
+    # No users list display
+    def test_list_display_with_no_user(self):
+        response = self.client.get(self.users_sorted_list_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, [])
+
+    # GET method test
+    def test_method_post_not_allowed(self):
+        user_1 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username1',
+                                          'test@email.blog1', 'test_password123')
+
+        user_2 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username2',
+                                          'test@email.blog2', 'test_password123')
+
+        user_3 = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username3',
+                                          'test@email.blog3', 'test_password123')
+        response = self.client.post(self.users_sorted_list_url)
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.data, {"detail": 'Method \"POST\" not allowed.'})

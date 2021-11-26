@@ -9,7 +9,7 @@ from ..models import User
 class RegistrationViewTest(TestSetUp):
 
     # Successful registration test
-    def test_of_user_successfully_register(self):
+    def test_successful_registration(self):
         response = self.client.post(self.register_url, self.user_data1, format='json')
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data, {"success": True, "response": "The user is successfully created.",
@@ -84,14 +84,14 @@ class RegistrationViewTest(TestSetUp):
                                                    "confirmed_password": ["This field is required."]})
 
     # Registration with preexisting unique credentials
-    def test_of_user_with_preexisted_username(self):
+    def test_of_registration_with_preexisted_username(self):
         init_response = self.client.post(self.register_url, self.user_data1, format='json')
         response = self.client.post(self.register_url, self.user_data2, format='json')
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {"success": False, "response": "The user isn't created.",
                                          "username": ["user with this username already exists."]})
 
-    def test_of_user_with_preexisted_email(self):
+    def test_of_registration_with_preexisted_email(self):
         init_response = self.client.post(self.register_url, self.user_data1, format='json')
         response = self.client.post(self.register_url, self.user_data3, format='json')
         self.assertEqual(response.status_code, 400)
@@ -99,7 +99,7 @@ class RegistrationViewTest(TestSetUp):
                                          "email": ["user with this email already exists."]})
 
     # Mismatching passwords test
-    def test_of_mismatching_password_and_confirmed_password(self):
+    def test_of_mismatching_between_password_and_confirmed_password(self):
         response = self.client.post(self.register_url, {'first_name': 'Test_first_name', 'last_name': 'Test_last_name',
                                                         'username': 'Test_username', 'email': 'test@email.blog',
                                                         'password': 'test_password123',
