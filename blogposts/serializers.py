@@ -22,4 +22,4 @@ class BlogPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = BlogPost
         fields = ['title', 'text', 'first_name',
-                  'last_name', 'username', 'date_created']
+                  'last_name', 'username']
