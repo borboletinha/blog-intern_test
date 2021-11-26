@@ -6,6 +6,7 @@ from blogposts.models import BlogPost
 
 
 class BlogPostTest(APITestCase):
+
     def setup(self):
         return User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
                                         'test@email.blog', 'test_password123')

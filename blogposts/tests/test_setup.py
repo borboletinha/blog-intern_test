@@ -6,7 +6,10 @@ class TestSetUp(APITestCase):
     def setUp(self):
         # URLs
         self.create_url = reverse('blogposts_api:create')
-        self.blogpost_url = reverse('blogposts_api:blogpost_detail')
+        self.login_url = reverse('users_api:login')
+
+        # Blogposts data
+        self.post_data = {'title': 'Test_title', 'text': 'Test_text'}
 
         return super().setUp()
 
