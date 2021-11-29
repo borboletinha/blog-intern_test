@@ -11,7 +11,7 @@ class RegistrationViewTest(TestSetUp):
     def test_registration(self):
         response = self.client.post(self.register_url, self.user_data1, format='json')
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data, {"success": True, "response": "The user is successfully created.",
+        self.assertEqual(response.data, {"detail": "The user is successfully created.",
                                          'first_name': 'Test_first_name', 'last_name': 'Test_last_name',
                                          'username': 'Test_username', 'email': 'test@email.blog'})
 
@@ -19,7 +19,7 @@ class RegistrationViewTest(TestSetUp):
     def test_of_user_cannot_register_without_all_credentials(self):
         response = self.client.post(self.register_url)
         self.assertEqual(response.status_code, 400)
-        self.assertRaisesMessage(ValidationError, {"success": False, "response": "The user isn't created.",
+        self.assertRaisesMessage(ValidationError, {"detail": "The user isn't created.",
                                                    "first_name": ["This field is required."],
                                                    "last_name": ["This field is required."],
                                                    "username": ["This field is required."],
@@ -33,7 +33,7 @@ class RegistrationViewTest(TestSetUp):
                                                         'password': 'test_password123',
                                                         'confirmed_password': 'test_password123'})
         self.assertEqual(response.status_code, 400)
-        self.assertRaisesMessage(ValidationError, {"success": False, "response": "The user isn't created.",
+        self.assertRaisesMessage(ValidationError, {"detail": "The user isn't created.",
                                                    "first_name": ["This field is required."]})
 
     def test_of_user_cannot_register_without_last_name(self):
@@ -42,7 +42,7 @@ class RegistrationViewTest(TestSetUp):
                                                         'password': 'test_password123',
                                                         'confirmed_password': 'test_password123'})
         self.assertEqual(response.status_code, 400)
-        self.assertRaisesMessage(ValidationError, {"success": False, "response": "The user isn't created.",
+        self.assertRaisesMessage(ValidationError, {"detail": "The user isn't created.",
                                                    "last_name": ["This field is required."]})
 
     def test_of_user_cannot_register_without_username(self):
@@ -51,7 +51,7 @@ class RegistrationViewTest(TestSetUp):
                                                         'password': 'test_password123',
                                                         'confirmed_password': 'test_password123'})
         self.assertEqual(response.status_code, 400)
-        self.assertRaisesMessage(ValidationError, {"success": False, "response": "The user isn't created.",
+        self.assertRaisesMessage(ValidationError, {"detail": "The user isn't created.",
                                                    "username": ["This field is required."]})
 
     def test_of_user_cannot_register_without_email(self):
@@ -60,7 +60,7 @@ class RegistrationViewTest(TestSetUp):
                                                         'password': 'test_password123',
                                                         'confirmed_password': 'test_password123'})
         self.assertEqual(response.status_code, 400)
-        self.assertRaisesMessage(ValidationError, {"success": False, "response": "The user isn't created.",
+        self.assertRaisesMessage(ValidationError, {"detail": "The user isn't created.",
                                                    "email": ["This field is required."]})
 
     def test_of_user_cannot_register_without_password(self):
@@ -69,7 +69,7 @@ class RegistrationViewTest(TestSetUp):
                                                         'password': '',
                                                         'confirmed_password': 'test_password123'})
         self.assertEqual(response.status_code, 400)
-        self.assertRaisesMessage(ValidationError, {"success": False, "response": "The user isn't created.",
+        self.assertRaisesMessage(ValidationError, {"detail": "The user isn't created.",
                                                    "password": ["This field is required."]})
 
     def test_of_user_cannot_register_without_confirmed_password(self):
@@ -79,7 +79,7 @@ class RegistrationViewTest(TestSetUp):
                                      'password': 'test_password123',
                                      'confirmed_password': ''})
         self.assertEqual(response.status_code, 400)
-        self.assertRaisesMessage(ValidationError, {"success": False, "response": "The user isn't created.",
+        self.assertRaisesMessage(ValidationError, {"detail": "The user isn't created.",
                                                    "confirmed_password": ["This field is required."]})
 
     # Registration with preexisting unique credentials
@@ -87,14 +87,14 @@ class RegistrationViewTest(TestSetUp):
         init_response = self.client.post(self.register_url, self.user_data1, format='json')
         response = self.client.post(self.register_url, self.user_data2, format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, {"success": False, "response": "The user isn't created.",
+        self.assertEqual(response.data, {"detail": "The user isn't created.",
                                          "username": ["user with this username already exists."]})
 
     def test_of_registration_with_preexisting_email(self):
         init_response = self.client.post(self.register_url, self.user_data1, format='json')
         response = self.client.post(self.register_url, self.user_data3, format='json')
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, {"success": False, "response": "The user isn't created.",
+        self.assertEqual(response.data, {"detail": "The user isn't created.",
                                          "email": ["user with this email already exists."]})
 
     # Mismatching passwords test

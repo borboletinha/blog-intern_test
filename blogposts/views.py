@@ -17,9 +17,9 @@ def blogpost_creation_view(request):
         try:
             post = serializer.save()
         except IntegrityError:
-            return Response({'success': False, 'response': 'You have already used the title'},
+            return Response({'detail': 'You have already used the title'},
                             status=status.HTTP_400_BAD_REQUEST)
-        data = {'success': True, 'slug': post.slug, 'title': post.title, 'text': post.text,
+        data = {'slug': post.slug, 'title': post.title, 'text': post.text,
                 'first_name': post.author.first_name, 'last_name': post.author.last_name,
                 'username': post.author.username}
         return Response(data, status=status.HTTP_201_CREATED)
@@ -34,8 +34,7 @@ def blogpost_detail_view(request, slug):
     try:
         blogpost = BlogPost.objects.get(slug=slug)
     except BlogPost.DoesNotExist:
-        return Response({'success': False, 'response': "The post doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'detail': "The post doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
     serializer = BlogPostSerializer(blogpost)
-    data = {'success': True}
-    data.update(serializer.data)
+    data = serializer.data
     return Response(data)

@@ -3,7 +3,6 @@ from django.urls import reverse
 from .test_setup import TestSetUp
 from users.models import User
 
-
 # BLOGPOSTS CREATION AND DISPLAY TESTS
 from ..models import BlogPost
 
@@ -24,7 +23,7 @@ class PostCreationViewTest(TestSetUp):
         response = self.client.post(self.create_url, self.post_data,
                                     HTTP_AUTHORIZATION=f'Bearer {access_token}')
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data, {'success': True, 'slug': 'test_username-test_title',
+        self.assertEqual(response.data, {'slug': 'test_username-test_title',
                                          'title': 'Test_title', 'text': 'Test_text',
                                          'first_name': 'Test_first_name', 'last_name': 'Test_last_name',
                                          'username': 'Test_username'})
@@ -93,7 +92,7 @@ class PostCreationViewTest(TestSetUp):
         response_2 = self.client.post(self.create_url, self.post_data,
                                       HTTP_AUTHORIZATION=f'Bearer {access_token}')
         self.assertEqual(response_2.status_code, 400)
-        self.assertEqual(response_2.data, {'success': False, 'response': 'You have already used the title'})
+        self.assertEqual(response_2.data, {'detail': 'You have already used the title'})
 
     # GET method test
     def test_method_get_not_allowed(self):
@@ -125,7 +124,7 @@ class PostDisplayViewTest(TestSetUp):
         response = self.client.get(reverse('blogposts_api:blogpost_detail',
                                            kwargs={'slug': post_response.data['slug']}), format='json')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, {'success': True, 'title': 'Test_title', 'text': 'Test_text',
+        self.assertEqual(response.data, {'title': 'Test_title', 'text': 'Test_text',
                                          'first_name': 'Test_first_name', 'last_name': 'Test_last_name',
                                          'username': 'Test_username'})
 
@@ -137,15 +136,15 @@ class PostDisplayViewTest(TestSetUp):
                                     format='json')
         access_token = response.data['access']
 
-        return self.client.post(self.create_url, self.post_data,
-                                HTTP_AUTHORIZATION=f'Bearer {access_token}')
+        post_response = self.client.post(self.create_url, self.post_data,
+                                         HTTP_AUTHORIZATION=f'Bearer {access_token}')
         blogpost = BlogPost.objects.get(slug=post_response.data['slug'])
         self.assertEqual(post_response.data['slug'], 'test_username-test_title')
         response = self.client.get(reverse('blogposts_api:blogpost_detail',
                                            kwargs={'slug': post_response.data['slug']}),
                                    HTTP_AUTHORIZATION=f'Bearer {access_token}', format='json')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, {'success': True, 'title': 'Test_title', 'text': 'Test_text',
+        self.assertEqual(response.data, {'title': 'Test_title', 'text': 'Test_text',
                                          'first_name': 'Test_first_name', 'last_name': 'Test_last_name',
                                          'username': 'Test_username'})
 
@@ -154,7 +153,7 @@ class PostDisplayViewTest(TestSetUp):
         response = self.client.get(reverse('blogposts_api:blogpost_detail',
                                            kwargs={'slug': 'random_slug'}), format='json')
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.data, {'success': False, 'response': "The post doesn't exist"})
+        self.assertEqual(response.data, {'detail': "The post doesn't exist"})
 
     # POST method test
     def test_method_get_not_allowed(self):
@@ -165,4 +164,3 @@ class PostDisplayViewTest(TestSetUp):
             reverse('blogposts_api:blogpost_detail', kwargs={'slug': post_response.data['slug']}), format='json')
         self.assertEqual(response.status_code, 405)
         self.assertEqual(response.data, {"detail": 'Method \"POST\" not allowed.'})
-
