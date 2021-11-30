@@ -6,16 +6,16 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Testblog Documentation",
-      default_version='v1',
-      description="Testblog REST API documentation",
-      terms_of_service="https://www.testblog.ru",
-      contact=openapi.Contact(email="test@blog.ru"),
-      license=openapi.License(name="Test License"),
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
+    openapi.Info(
+        title="Testblog Documentation",
+        default_version='v1',
+        description="Testblog REST API documentation",
+        terms_of_service="https://www.testblog.ru",
+        contact=openapi.Contact(email="test@blog.ru"),
+        license=openapi.License(name="Test License")
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [

@@ -9,7 +9,7 @@ from .serializers import *
 
 
 @swagger_auto_schema(method='post',
-                     operation_description='Takes a set of the new post data, creates the posts and returns '
+                     operation_description='Takes a set of the new post data, creates the post and returns '
                                            'the data that the post has just been successfully published if '
                                            'all the necessary data has been provided and it is valid. ' 
                                            'Available only to authorized users.',

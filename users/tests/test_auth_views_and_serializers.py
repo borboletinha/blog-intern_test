@@ -177,14 +177,16 @@ class TokenRefreshTests(TestSetUp):
     # Token successful refresh test
     def test_token_refresh(self):
         refresh_token = TokenRefreshTests.setup(self)
-        response_refresh = self.client.post(self.login_refresh_url, {'refresh': refresh_token})
+        response_refresh = self.client.post(self.login_refresh_url, {'refresh': refresh_token}, format='json')
         self.assertEqual(response_refresh.status_code, 200)
         self.assertTrue('access' in response_refresh.data)
+        self.assertTrue('refresh' in response_refresh.data)
+        self.assertNotEqual(refresh_token, response_refresh.data['refresh'])
 
     # Token failed refresh test
     def test_failed_token_refresh_with_wrong_refresh_token(self):
         refresh_token = TokenRefreshTests.setup(self)
-        response_refresh = self.client.post(self.login_refresh_url, {'refresh': 'wrong_token'})
+        response_refresh = self.client.post(self.login_refresh_url, {'refresh': 'wrong_token'}, format='json')
         self.assertEqual(response_refresh.status_code, 401)
         self.assertTrue(response_refresh.data, {"detail": "Token has wrong type", "code": "token_not_valid"})
 
@@ -192,16 +194,13 @@ class TokenRefreshTests(TestSetUp):
     def test_failed_token_refresh_without_refresh_token(self):
         refresh_token = TokenRefreshTests.setup(self)
         self.assertNotEqual(refresh_token, 'wrong_test_token')
-        response_refresh = self.client.post(self.login_refresh_url, {'refresh': ''})
+        response_refresh = self.client.post(self.login_refresh_url, {'refresh': ''}, format='json')
         self.assertEqual(response_refresh.status_code, 400)
         self.assertTrue(response_refresh.data, {"refresh": ["This field may not be blank."]})
 
     # GET method test
     def test_method_get_not_allowed(self):
-        user = User.objects.create_user('Test_first_name', 'Test_last_name', 'Test_username',
-                                        'test@email.blog', 'test_password123')
-        response = self.client.get(self.login_url,
-                                   {'email': 'test@email.blog', 'password': 'test_password123'},
-                                   format='json')
-        self.assertEqual(response.status_code, 405)
-        self.assertEqual(response.data, {"detail": 'Method \"GET\" not allowed.'})
+        refresh_token = TokenRefreshTests.setup(self)
+        response_refresh = self.client.get(self.login_refresh_url, {'refresh': refresh_token}, format='json')
+        self.assertEqual(response_refresh.status_code, 405)
+        self.assertEqual(response_refresh.data, {"detail": 'Method \"GET\" not allowed.'})

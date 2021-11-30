@@ -14,7 +14,7 @@ from .models import User
                                            'all the necessary credentials have been provided and they are valid. '
                                            'Available only to unauthorized users.',
                      request_body=RegistrationSerializer,
-                     responses={201: SwaggerRegistrationSerializer(many=True)}
+                     responses={201: RegistrationResponseSerializer(many=True)}
                      )
 @api_view(['POST'])
 def registration_view(request):
@@ -32,7 +32,8 @@ def registration_view(request):
 
 
 class UsersViewSet(viewsets.ViewSet):
-    @swagger_auto_schema(operation_description='Displays all currently active users in unsorted order. '
+    @swagger_auto_schema(operation_description='Displays all currently active users in the default order, '
+                                               'which is by a date a user joined. '
                                                'Available to both authorized and unauthorized users.',
                          responses={200: UserSerializer(many=True)}
                          )
@@ -54,19 +55,19 @@ class UsersSortedViewSet(viewsets.ViewSet):
 
 
 # JWT views for Swagger
-class MyTokenObtainPairView(TokenObtainPairView):
+class DecoratedTokenObtainPairView(TokenObtainPairView):
     @swagger_auto_schema(operation_description='Takes a set of user credentials and returns an access and refresh JSON '
                                                'web token pair to prove the authentication of those credentials. '
                                                'Available only to unauthorized users.',
-                         responses={200: SwaggerTokenObtainPairSerializer})
+                         responses={200: TokenObtainPairResponseSerializer(many=True)})
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
 
-class MyTokenRefreshView(TokenRefreshView):
-    @swagger_auto_schema(operation_description='Takes a refresh type JSON web token and returns an access type JSON web'
-                                               'token if the refresh token is valid. '
+class DecoratedTokenRefreshView(TokenRefreshView):
+    @swagger_auto_schema(operation_description='Takes a refresh type JSON web token and returns an access and new '
+                                               'refresh type JSON web token pair if the initial refresh token is valid. '
                                                'Available only to authorized users.',
-                         responses={200: SwaggerTokenRefreshSerializer})
+                         responses={200: TokenRefreshResponseSerializer(many=True)})
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)

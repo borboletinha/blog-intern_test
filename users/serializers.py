@@ -1,7 +1,4 @@
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.contrib.postgres.fields import JSONField
-from drf_yasg import openapi
 from .models import User
 
 
@@ -42,7 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 # Serializers for Swagger
 
-class SwaggerRegistrationSerializer(serializers.Serializer):
+class RegistrationResponseSerializer(serializers.Serializer):
     detail = 'The user is successfully created.'
     first_name = serializers.CharField()
     last_name = serializers.CharField()
@@ -50,11 +47,11 @@ class SwaggerRegistrationSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
 
-class SwaggerTokenObtainPairSerializer(serializers.Serializer):
+class TokenObtainPairResponseSerializer(serializers.Serializer):
     access = serializers.CharField()
     refresh = serializers.CharField()
 
 
-class SwaggerTokenRefreshSerializer(serializers.Serializer):
+class TokenRefreshResponseSerializer(serializers.Serializer):
     access = serializers.CharField()
-
+    refresh = serializers.CharField()
