@@ -10,6 +10,8 @@ As part of the assignment, the following APIs for the blog have been implemented
 ## Usage
 Please kindly note that the secret key of the project and the database user password are deliberately missing from the repository (SECRET_KEY and PASSWORD in testblog/settings.py).
 
+All requirements are listed in the [separate file](https://github.com/borboletinha/blog-intern_test/blob/main/requirements.txt).
+
 ## Documentation
 Please kindly note that for the project has been provided dynamic Swagger documentation. It could be found at the following link: http://127.0.0.1:8000/docs/.
 
