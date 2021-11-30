@@ -13,7 +13,7 @@ Please kindly note that the secret key of the project and the database user pass
 ## Documentation
 Please kindly note that for the project has been provided dynamic Swagger documentation. It could be found at the following link: http://127.0.0.1:8000/docs/.
 
-Also [static documentation] (https://github.com/borboletinha/blog-intern_test/blob/main/testblog_documentation_static.html) is provided for convenience.
+Also [static documentation](https://github.com/borboletinha/blog-intern_test/blob/main/testblog_documentation_static.html) is provided for convenience.
 
 ## Project URLs structure
 ```
