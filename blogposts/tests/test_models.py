@@ -1,4 +1,3 @@
-from django.urls import reverse
 from rest_framework.test import APITestCase
 from django.db.utils import DataError
 from users.models import User
