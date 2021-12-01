@@ -66,7 +66,8 @@ class DecoratedTokenObtainPairView(TokenObtainPairView):
 
 class DecoratedTokenRefreshView(TokenRefreshView):
     @swagger_auto_schema(operation_description='Takes a refresh type JSON web token and returns an access and new '
-                                               'refresh type JSON web token pair if the initial refresh token is valid. '
+                                               'refresh type JSON web token pair if the initial refresh token is '
+                                               'valid. '
                                                'Available only to authorized users.',
                          responses={200: TokenRefreshResponseSerializer(many=True)})
     def post(self, request, *args, **kwargs):
