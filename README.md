@@ -13,7 +13,9 @@ Please kindly note that the secret key of the project and the database user pass
 All requirements are listed in the [separate file](https://github.com/borboletinha/blog-intern_test/blob/main/requirements.txt).
 
 ## Documentation
-Please kindly note that for the project has been provided dynamic Swagger documentation. It could be found at the following link: http://127.0.0.1:8000/docs/.
+Please kindly note that for the project has been provided dynamic Swagger documentation. It could be found at the following link after running the project on your computer: http://127.0.0.1:8000/docs/.
+
+Please also note that for authorization within the Swagger documentation, in the "value" field on the "Authorization" banner (upper right web-page corner), you should manually enter the prefix "Bearer" and then the valid access token.
 
 Also [static documentation](https://github.com/borboletinha/blog-intern_test/blob/main/testblog_documentation_static.html) is provided for convenience.
 
