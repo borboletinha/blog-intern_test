@@ -8,7 +8,7 @@ As part of the assignment, the following APIs for the blog have been implemented
 - displaying a list of all registered users both in chronological (by registration date) and sorted by the number of posts order.
 
 ## Usage
-Please kindly note that the secret key of the project and the database user password are deliberately missing from the repository (SECRET_KEY and PASSWORD in testblog/settings.py).
+Please kindly note that the secret key of the project and the database user password are deliberately excluded from the repository (SECRET_KEY and PASSWORD in testblog/settings.py).
 
 All requirements are listed in the [separate file](https://github.com/borboletinha/blog-intern_test/blob/main/requirements.txt).
 
@@ -57,6 +57,7 @@ docs/                   # provides dynamic Swagger documentation
 ├── README.md
 ├── requirements.txt
 ├── testblog
+├── testblog_documentation_static.html
 │   ├── asgi.py
 │   ├── __init__.py
 │   ├── settings.py
