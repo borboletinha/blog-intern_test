@@ -46,7 +46,7 @@ class UsersViewSet(viewsets.ViewSet):
 class UsersSortedViewSet(viewsets.ViewSet):
     @swagger_auto_schema(operation_description='Displays all currently active users ordered by number of posts. '
                                                'Available to both authorized and unauthorized users.',
-                         responses={200: UserSerializer(many=False)}
+                         responses={200: UserSerializer(many=True)}
                          )
     def sorted_list(self, request):
         queryset = User.objects.all().annotate(num_posts=Count('blogpost')).order_by('-num_posts')
