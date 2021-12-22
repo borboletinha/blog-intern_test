@@ -148,7 +148,7 @@ class PostDisplayViewTest(TestSetUp):
                                          'first_name': 'Test_first_name', 'last_name': 'Test_last_name',
                                          'username': 'Test_username'})
 
-    # Display of an nonexistent post set test
+    # Display of a nonexistent post set test
     def test_nonexistent_post_display(self):
         response = self.client.get(reverse('blogposts_api:blogpost_detail',
                                            kwargs={'slug': 'random_slug'}), format='json')
